@@ -9,68 +9,66 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import kotlin.math.*
 
-class RandomShaper(private val image: ImageView, private val color: Int = Color.BLACK, private val points: Int = 4) {
+class RandomShaper(private val color: Int = Color.BLACK, private val points: Int = 4) {
 
     private var shapeSize = 0
 
-    init{
+    fun setupShape(image: ImageView) {
+
         image.width { shapeSize = it
-            setupShape()
-        }
-    }
 
-    private fun setupShape() {
+            val coordinates = getCoordinatesForScale()
 
-        val coordinates = getCoordinatesForScale()
+            val px = arrayListOf<Int>()
+            val py = arrayListOf<Int>()
+            for (c in coordinates) {
+                px.add(c.second)
+                py.add(c.first)
+            }
 
-        val px = arrayListOf<Int>()
-        val py = arrayListOf<Int>()
-        for (c in coordinates) {
-            px.add(c.second)
-            py.add(c.first)
-        }
+            val p = Polygon(
+                px.toIntArray(),
+                py.toIntArray(),
+                px.size
+            )
 
-        val p = Polygon(
-            px.toIntArray(),
-            py.toIntArray(),
-            px.size
-        )
+            val myBitmap = createPlaceholderImage(shapeSize)
 
-        val myBitmap = createImage(shapeSize)
+            val pixels = IntArray(shapeSize * shapeSize)
+            myBitmap.getPixels(
+                pixels,
+                0,
+                myBitmap.width,
+                0,
+                0,
+                myBitmap.width,
+                myBitmap.height
+            )
 
-        val pixels = IntArray(shapeSize * shapeSize)
-        myBitmap.getPixels(
-            pixels,
-            0,
-            myBitmap.width,
-            0,
-            0,
-            myBitmap.width,
-            myBitmap.height
-        )
-
-        for (i in 0 until shapeSize) {
-            for (j in 0 until shapeSize) {
-                if (p.contains(j.toFloat(), i.toFloat())) {
-                    pixels[shapeSize * i + j] = color
-                } else {
-                    pixels[shapeSize * i + j] = Color.TRANSPARENT
+            for (i in 0 until shapeSize) {
+                for (j in 0 until shapeSize) {
+                    if (p.contains(j.toFloat(), i.toFloat())) {
+                        pixels[shapeSize * i + j] = color
+                    } else {
+                        pixels[shapeSize * i + j] = Color.TRANSPARENT
+                    }
                 }
             }
+
+
+            myBitmap.setPixels(
+                pixels,
+                0,
+                myBitmap.width,
+                0,
+                0,
+                myBitmap.width,
+                myBitmap.height
+            )
+
+            image.setImageBitmap(myBitmap)
         }
 
-
-        myBitmap.setPixels(
-            pixels,
-            0,
-            myBitmap.width,
-            0,
-            0,
-            myBitmap.width,
-            myBitmap.height
-        )
-
-        image.setImageBitmap(myBitmap)
 
     }
 
@@ -137,7 +135,7 @@ class RandomShaper(private val image: ImageView, private val color: Int = Color.
         return coordinates
     }
 
-    private fun createImage(size: Int): Bitmap {
+    private fun createPlaceholderImage(size: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
