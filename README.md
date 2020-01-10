@@ -1,9 +1,12 @@
-# random-shaper
+[![](https://jitpack.io/v/KonstantinosReppas/random-shaper.svg)](https://jitpack.io/#KonstantinosReppas/random-shaper)
+# random-shaper  
+
 Android library that creates a random convex polygon bitmap
 
 + Shape color is configurable
 + Number of polygon points is configurable
 + Simple plug and play
+
 
 # Setup
 
