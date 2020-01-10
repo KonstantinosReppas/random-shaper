@@ -4,14 +4,22 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import kotlin.math.*
 
 class RandomShaper(private val image: ImageView, private val color: Int = Color.BLACK, private val points: Int = 4) {
 
-    private val shapeSize = image.width
+    private var shapeSize = 0
 
-    fun setupShape() {
+    init{
+        image.width { shapeSize = it
+            setupShape()
+        }
+    }
+
+    private fun setupShape() {
 
         val coordinates = getCoordinatesForScale()
 
@@ -137,6 +145,17 @@ class RandomShaper(private val image: ImageView, private val color: Int = Color.
         paint.color = Color.CYAN
         canvas.drawRect(0f, 0f, size.toFloat(), size.toFloat(), paint)
         return bitmap
+    }
+
+    private fun <T : View> T.width(function: (Int) -> Unit) {
+        if (width == 0)
+            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    function(width)
+                }
+            })
+        else function(width)
     }
 
 }

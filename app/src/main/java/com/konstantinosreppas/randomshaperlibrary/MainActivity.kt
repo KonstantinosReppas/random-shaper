@@ -16,6 +16,6 @@ class MainActivity : AppCompatActivity() {
 
         image.setOnClickListener {
             text.visibility = View.GONE
-            RandomShaper(image, Color.BLACK, 5).setupShape() }
+            RandomShaper(image, Color.BLACK, 5) }
     }
 }
