@@ -40,7 +40,3 @@ RandomShaper().setupShape(mImageView) //default arguments: Color.BLACK, 4
 new RandomShaper(Color.BLUE, 6).setupShape(mImageView);
   ```
 
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
